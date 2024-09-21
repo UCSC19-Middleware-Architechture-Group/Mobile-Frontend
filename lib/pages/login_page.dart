@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'register_page.dart'; 
+import 'package:flutter/services.dart';
+import 'dashboard_page.dart'; // Add the dashboard page import
+import 'register_page.dart';
 import 'forgot_password_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,13 +13,54 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   String? _email;
   String? _password;
+  bool _isLoading = false; // For showing loading indicator
 
-  void _login() {
+  void _login() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-      // Implement login logic here (API call, etc.)
-      print('Email: $_email, Password: $_password');
+
+      setState(() {
+        _isLoading = true; // Show loading indicator
+      });
+
+      // Simulate a login process with a delay
+      await Future.delayed(Duration(seconds: 2));
+
+      // Check for login credentials (in a real app, use API call here)
+      if (_email == 'n@gmail.com' && _password == '123') {
+        setState(() {
+          _isLoading = false;
+        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => DashboardPage()), // Navigate to Dashboard
+        );
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+        // Show error message for invalid credentials
+        _showErrorDialog('Invalid email or password');
+      }
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Login Failed'),
+        content: Text(message),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+            },
+            child: Text('OK'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -58,9 +101,12 @@ class _LoginPageState extends State<LoginPage> {
                           fillColor: Colors.white,
                           prefixIcon: Icon(Icons.email),
                         ),
+                        keyboardType: TextInputType.emailAddress,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter your email';
+                          } else if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
+                            return 'Please enter a valid email';
                           }
                           return null;
                         },
@@ -85,27 +131,28 @@ class _LoginPageState extends State<LoginPage> {
                         onSaved: (value) => _password = value,
                       ),
                       SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: _login,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color.fromARGB(255, 109, 107, 107), // Button color
-                          padding: EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          elevation: 5, // Add a slight elevation
-                        ),
-                        child: Text(
-                          'Login',
-                          style: TextStyle(
-                            color: Colors.white, // White text for contrast
-                          ),
-                        ),
-                      ),
+                      _isLoading
+                          ? CircularProgressIndicator() // Show loading indicator during login
+                          : ElevatedButton(
+                              onPressed: _login,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color.fromARGB(255, 109, 107, 107), // Button color
+                                padding: EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 5,
+                              ),
+                              child: Text(
+                                'Login',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                       SizedBox(height: 16),
                       TextButton(
                         onPressed: () {
-                          // Navigate to the Registration Page
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => RegistrationPage()),
@@ -113,13 +160,11 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Text(
                           'Create New Account',
-                          style: TextStyle(color: Colors.black), // Black text
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
-
                       TextButton(
                         onPressed: () {
-                          // Navigate to the Forgot Password Page
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
@@ -127,7 +172,7 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Text(
                           'Forgot Password?',
-                          style: TextStyle(color: Colors.black), // Black text
+                          style: TextStyle(color: Colors.black),
                         ),
                       ),
                     ],
