@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'pages/dashboard_page.dart'; // Import your dashboard page
-
+import 'pages/notifications_page.dart'; // Import your notifications page
 
 void main() {
   runApp(MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => DashboardPage(),
-       
+        '/notifications': (context) => NotificationsPage(),
         // Define other routes here
       },
     );

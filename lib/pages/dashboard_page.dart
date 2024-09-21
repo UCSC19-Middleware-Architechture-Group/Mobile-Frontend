@@ -5,7 +5,10 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'), // Added title for clarity
+        title: Text(
+          'Dashboard', // Added title for clarity
+          style: TextStyle(color: Colors.white), // Set title color to white
+        ),
         backgroundColor: Color.fromARGB(255, 16, 35, 68), // Dark blue background
       ),
       body: Padding(
