@@ -3,6 +3,7 @@ import 'pages/dashboard_page.dart'; // Import your dashboard page
 import 'pages/notifications_page.dart'; // Import your notifications page
 import 'pages/bill_page.dart';
 import 'pages/services_page.dart';
+import 'pages/profile_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,7 +23,7 @@ class MyApp extends StatelessWidget {
         '/notifications': (context) => NotificationsPage(),
         '/bills': (context) => BillsPage(),
         '/services': (context) => ServicesPage(),
-        
+        '/profile': (context) => ProfileManagementPage(),
       },
     );
   }
